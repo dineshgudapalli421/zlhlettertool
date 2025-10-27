@@ -1,0 +1,98 @@
+<core:FragmentDefinition
+    xmlns:valuehelpdialog="sap.ui.comp.valuehelpdialog"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+>
+    <Dialog
+        title="{i18n>lhvalhelpValueHelp}"
+        contentWidth="60%"
+        busy="{LetterTool>/bIsConTractAccountBusy}"
+        busyIndicatorDelay="1"
+    >
+        <VBox>
+            <f:SimpleForm
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="5"
+                labelSpanL="5"
+                labelSpanM="5"
+                labelSpanS="5"
+                adjustLabelSpan="false"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="3"
+                columnsL="2"
+                columnsM="2"
+                singleContainerFullSize="false"
+                binding="{LetterTool>/oContractAccVHObj}"
+            >
+                <f:content>
+                    <core:Title />
+                    <Label text="{i18n>lhLetterToolFirstNameLabel}" />
+                    <Input
+                        width="70%"
+                        value="{LetterTool>sFirstName}"
+                    />
+                    <Label text="{i18n>lhLetterToolLastNameLabel}" />
+                    <Input
+                        width="70%"
+                        value="{LetterTool>sLastName}"
+                    />
+                    <core:Title />
+                    <Label text="{i18n>lhLetterToolAccIdLabel}" />
+                    <Input
+                        width="70%"
+                        value="{LetterTool>sAcountId}"
+                    />
+                </f:content>
+            </f:SimpleForm>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="idsearch"
+                    press="onPressValuehelp"
+                    width="auto"
+                    text="Search"
+                    type="Emphasized"
+                />
+            </Toolbar>
+
+            <List
+                id="idListvalueContAcc"
+                includeItemInSelection="true"
+                mode="MultiSelect"
+                headerText="{i18n>lhvalhelpfraAccDet}"
+                showUnread="true"
+                items="{LetterTool>/valuehelpList}"
+            >
+                <items>
+                    <StandardListItem
+                        id="idvaluestan"
+                        title="{LetterTool>ContractAccounts/results/0/ContractAccountID}"
+                    />
+                </items>
+            </List>
+        </VBox>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    id="Close"
+                    press="onCloseContAccValuehelp"
+                    width="auto"
+                    text="{i18n>lhvalhelpfraClose}"
+                    type="Reject"
+                />
+                <Button
+                    id="idsubmit"
+                    type="Emphasized"
+                    text="{i18n>lhvalhelpfraSubmit}"
+                    press="onSubmitContractAccValHelp"
+                />
+            </Toolbar>
+        </footer>
+    </Dialog>
+</core:FragmentDefinition>

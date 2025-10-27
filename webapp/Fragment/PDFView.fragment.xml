@@ -1,0 +1,67 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+>
+    <Dialog
+        title="PDF Viewer"
+        contentHeight="80%"
+        contentWidth="100%"
+    >
+        <content>
+            <FlexBox
+                alignItems="Start"
+                justifyContent="Start"
+            >
+                <SearchField
+                    class="sapUiSmallMargin"
+                    width="50%"
+                    search="onPressLetterId"
+                    placeholder="Search with Letter Id"
+                >
+                    <layoutData>
+                        <FlexItemData growFactor="2" />
+                    </layoutData>
+                </SearchField>
+                <!-- <Input
+                    id="idLetterID"
+                    value=""
+                    press="onCorrectPathClick"
+                    class="sapUiSmallMargin"
+                    width="50%"
+                >
+                    <layoutData>
+                        <FlexItemData growFactor="2" />
+                    </layoutData>
+                </Input>
+                <Button
+                    text="Submit"
+                    press="onPressLetterId"
+                    class="sapUiSmallMargin"
+                    width="30%"
+                >
+                    <layoutData>
+                        <FlexItemData growFactor="3" />
+                    </layoutData>
+                </Button> -->
+            </FlexBox>
+            <PDFViewer
+                source="{LetterTool>/sLetterSource}"
+                isTrustedSource="true"
+                title="{/Title}"
+                height="100%"
+                displayType="Embedded"
+            >
+                <layoutData>
+                    <FlexItemData growFactor="1" />
+                </layoutData>
+            </PDFViewer>
+        </content>
+        <buttons>
+            <Button
+                text="Close"
+                press="onCloseDialogPDF"
+                type="Negative"
+            />
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,148 @@
+<mvc:View
+    controllerName="com.sap.lh.bi.zlhlettertool.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+>
+    <Page
+        showHeader="true"
+        busy="{LetterTool>/bIsBusy}"
+        busyIndicatorDelay="1"
+    >
+        <!-- <headerContent>
+            <Button
+                text="{i18n>CorrTypelegBtn}"
+                type="Transparent"
+                press="onPressCoreTypeLegacy"
+            />
+            <Button
+                icon="sap-icon://sap-box"
+                text="{i18n>zlhDisCorType}"
+                type="Transparent"
+                press="onPressCoreTypeDis"
+            />
+        </headerContent> -->
+        <content>
+            <f:SimpleForm
+                id="idIntRecAccDetSF"
+                editable="true"
+                layout="ResponsiveGridLayout"
+                labelSpanXL="5"
+                labelSpanL="5"
+                labelSpanM="5"
+                labelSpanS="5"
+                adjustLabelSpan="false"
+                emptySpanXL="0"
+                emptySpanL="0"
+                emptySpanM="0"
+                emptySpanS="0"
+                columnsXL="3"
+                columnsL="2"
+                columnsM="2"
+                singleContainerFullSize="false"
+            >
+                <f:content>
+                    <core:Title id="title" />
+                    <Label
+                        text="{i18n>zlhcortype}"
+                        vAlign="Middle"
+                        required="true"
+                    />
+                    <Input
+                        id="idCorrType"
+                        showSuggestion="true"
+                        width="100%"
+                        busyIndicatorDelay="10"
+                        showTableSuggestionValueHelp="false"
+                        change="onChangeCorrType"
+                        suggestionRows="{/CorrTypeSet}"
+                    >
+                        <suggestionColumns>
+                            <Column>
+                                <Label text="{i18n>lhLetterTooCorrTypeLabel}" />
+                            </Column>
+                            <Column hAlign="Center">
+                                <Label text="{i18n>lhLetterToolDescLabel}" />
+                            </Column>
+                        </suggestionColumns>
+                        <suggestionRows>
+                            <ColumnListItem>
+                                <Label text="{COTYP}" />
+                                <Label text="{Description}" />
+                            </ColumnListItem>
+                        </suggestionRows>
+                    </Input>
+
+                    <Label text="{i18n>zlhcontacc}" />
+                    <MultiInput width="100%"
+                                busyIndicatorDelay="10"
+                                showValueHelp="true"
+                                id="idConAcc"
+                                submit="onSubContAcc"
+                                valueHelpRequest="onValueHelpContAcc"
+                                ></MultiInput>
+                    <!-- <Input
+                        width="100%"
+                        busyIndicatorDelay="10"
+                        showValueHelp="true"
+                        id="idConAcc"
+                        submit="onSubContAcc"
+                        valueHelpRequest="onValueHelpContAcc"
+                    /> -->
+                    <Label
+                        text="{i18n>zlhcontaccNumb}"
+                        required="{= %{LetterTool>/aContracts}.length >0}"
+                    />
+
+                    <MultiComboBox
+                        id="IdContractsMultInput"
+                        selectionChange="handleSelectionChange"
+                        selectionFinish="handleSelectionFinish"
+                        width="350px"
+                        items="{path: 'LetterTool>/aContracts'}"
+                    >
+                        <core:Item
+                            key="{LetterTool>ContractID}"
+                            text="{LetterTool>ContractID}"
+                        />
+                    </MultiComboBox>
+                    <Label text="{i18n>zlhportion}" />
+                    <MultiInput
+                        class="sapUiSmallMarginBottom"
+                        busyIndicatorDelay="10"
+                        id="idPortio"
+                        width="100%"
+                        showValueHelp="false"
+                        suggestionItems="{path: '/PortionSet'}"
+                    >
+                        <core:Item
+                            key="{PortionName}"
+                            text="{Description}"
+                        />
+                    </MultiInput>
+                    <!-- <Label text="{i18n>zlhdevice}" />
+            <MultiInput class="sapUiSmallMarginBottom" busyIndicatorDelay="10" valueHelpRequest="onValueHelpDevice"
+                            id="idDev" submit="onSubDevSet"
+                            width="100%"
+                            showValueHelp="true"
+                            suggestionItems="{path: '/DeviceSet'}">
+                    <core:Item key="{DeviceName}" text="{Description}" />
+                </MultiInput> -->
+                </f:content>
+            </f:SimpleForm>
+        </content>
+        <footer>
+            <Toolbar>
+                <ToolbarSpacer />
+                <Button
+                    type="Emphasized"
+                    text="{i18n>zlhsubmit}"
+                    press="onSubmitLetTool"
+                />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

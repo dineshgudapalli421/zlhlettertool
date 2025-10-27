@@ -1,0 +1,55 @@
+<core:FragmentDefinition
+xmlns:valuehelpdialog="sap.ui.comp.valuehelpdialog"
+	xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+	xmlns:smartList="sap.ui.comp.smartlist">
+    <Dialog title="{i18n>lhvalhelpValueHelp}" contentWidth="60%">
+	<VBox>
+    <f:SimpleForm
+			editable="true"
+			layout="ResponsiveGridLayout"
+			labelSpanXL="5"
+			labelSpanL="5"
+			labelSpanM="5"
+			labelSpanS="5"
+			adjustLabelSpan="false"
+			emptySpanXL="0"
+			emptySpanL="0"
+			emptySpanM="0"
+			emptySpanS="0"
+			columnsXL="3"
+			columnsL="2"
+			columnsM="2"
+			singleContainerFullSize="false" >
+			<f:content>
+		         <Label  text= "{i18n>lhvalhelpfraDescrip}" width="70%"/>
+				 <Input id="idvhDesc" width="70%"   ></Input>&nbsp;
+			
+        </f:content>
+         </f:SimpleForm >
+		  <Toolbar >
+				 <ToolbarSpacer />&nbsp;
+                 <Button  press="onSearchValuehelpDevice" width="auto" text="{i18n>lhvalhelpfraSearch}" busyIndicatorDelay= "10"  type="Emphasized"/>
+			 </Toolbar>
+		 <List id="idListvalue"  includeItemInSelection="true" mode="MultiSelect"
+		headerText="{i18n>lhvalhelpfralistofDev}"
+		showUnread="true"
+		items="{LetterTool>/adeviceset}"
+		 >
+		<items>&nbsp;
+			<StandardListItem
+			title= "{LetterTool>DeviceName}"
+			description="{LetterTool>Description}" />
+		</items>
+	</List>
+		  </VBox>
+         	<footer>
+			<Toolbar >
+				<ToolbarSpacer />
+                 <Button press="onCloseValuehelp" width="auto" text="{i18n>lhvalhelpfraDevClo}" busyIndicatorDelay= "10"  type="Reject"/>
+				<Button  type="Emphasized" text="{i18n>lhvalhelpfraDevSub}" press="onSubmitDevSet" busyIndicatorDelay= "10" />
+			</Toolbar>
+		</footer>	
+        </Dialog>&nbsp;&nbsp;
+</core:FragmentDefinition>

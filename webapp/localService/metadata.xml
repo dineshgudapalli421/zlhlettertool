@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZBI_PW_LETTER_TOOL_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="CorrType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="COTYP"/>
+                </Key>
+                <Property Name="COTYP" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Rel.proc.types" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="NAVCORRTYPE_PORTION" Relationship="ZBI_PW_LETTER_TOOL_SRV.CorrType_Portion" FromRole="FromRole_CorrType_Portion" ToRole="ToRole_CorrType_Portion"/>
+                <NavigationProperty Name="NAVCORRTYPE_DEVICE" Relationship="ZBI_PW_LETTER_TOOL_SRV.CorrType_Device" FromRole="FromRole_CorrType_Device" ToRole="ToRole_CorrType_Device"/>
+                <NavigationProperty Name="NAVCORRTYPE_CONTRACTACCOUNT" Relationship="ZBI_PW_LETTER_TOOL_SRV.CorrType_ContractAccount" FromRole="FromRole_CorrType_ContractAccount" ToRole="ToRole_CorrType_ContractAccount"/>
+                <NavigationProperty Name="NAVCORRTYPE_CONTRACT" Relationship="ZBI_PW_LETTER_TOOL_SRV.CorrType_Contract" FromRole="FromRole_CorrType_Contract" ToRole="ToRole_CorrType_Contract"/>
+            </EntityType>
+            <EntityType Name="Portion" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PortionName"/>
+                </Key>
+                <Property Name="PortionName" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="Device" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="DeviceName"/>
+                </Key>
+                <Property Name="DeviceName" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+            </EntityType>
+            <EntityType Name="ContractAccount" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ContractAcc"/>
+                </Key>
+                <Property Name="ContractAcc" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Description" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+            </EntityType>
+            <EntityType Name="Contract" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ContractNum"/>
+                </Key>
+                <Property Name="ContractNum" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="CorrType_Device" sap:content-version="1">
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.CorrType" Multiplicity="1" Role="FromRole_CorrType_Device"/>
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.Device" Multiplicity="*" Role="ToRole_CorrType_Device"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_CorrType_Device">
+                        <PropertyRef Name="COTYP"/>
+                    </Principal>
+                    <Dependent Role="ToRole_CorrType_Device">
+                        <PropertyRef Name="DeviceName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="CorrType_ContractAccount" sap:content-version="1">
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.CorrType" Multiplicity="1" Role="FromRole_CorrType_ContractAccount"/>
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.ContractAccount" Multiplicity="*" Role="ToRole_CorrType_ContractAccount"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_CorrType_ContractAccount">
+                        <PropertyRef Name="COTYP"/>
+                    </Principal>
+                    <Dependent Role="ToRole_CorrType_ContractAccount">
+                        <PropertyRef Name="ContractAcc"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="CorrType_Contract" sap:content-version="1">
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.CorrType" Multiplicity="1" Role="FromRole_CorrType_Contract"/>
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.Contract" Multiplicity="*" Role="ToRole_CorrType_Contract"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_CorrType_Contract">
+                        <PropertyRef Name="COTYP"/>
+                    </Principal>
+                    <Dependent Role="ToRole_CorrType_Contract">
+                        <PropertyRef Name="ContractNum"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="CorrType_Portion" sap:content-version="1">
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.CorrType" Multiplicity="1" Role="FromRole_CorrType_Portion"/>
+                <End Type="ZBI_PW_LETTER_TOOL_SRV.Portion" Multiplicity="*" Role="ToRole_CorrType_Portion"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_CorrType_Portion">
+                        <PropertyRef Name="COTYP"/>
+                    </Principal>
+                    <Dependent Role="ToRole_CorrType_Portion">
+                        <PropertyRef Name="PortionName"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZBI_PW_LETTER_TOOL_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="CorrTypeSet" EntityType="ZBI_PW_LETTER_TOOL_SRV.CorrType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="PortionSet" EntityType="ZBI_PW_LETTER_TOOL_SRV.Portion" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="DeviceSet" EntityType="ZBI_PW_LETTER_TOOL_SRV.Device" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="ContractAccountSet" EntityType="ZBI_PW_LETTER_TOOL_SRV.ContractAccount" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="ContractSet" EntityType="ZBI_PW_LETTER_TOOL_SRV.Contract" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="CORRTYPE_PORTIONSet" Association="ZBI_PW_LETTER_TOOL_SRV.CorrType_Portion" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="CorrTypeSet" Role="FromRole_CorrType_Portion"/>
+                    <End EntitySet="PortionSet" Role="ToRole_CorrType_Portion"/>
+                </AssociationSet>
+                <AssociationSet Name="CORRTYPE_DEVICESet" Association="ZBI_PW_LETTER_TOOL_SRV.CorrType_Device" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="CorrTypeSet" Role="FromRole_CorrType_Device"/>
+                    <End EntitySet="DeviceSet" Role="ToRole_CorrType_Device"/>
+                </AssociationSet>
+                <AssociationSet Name="CORRTYPE_ContractAccountSet" Association="ZBI_PW_LETTER_TOOL_SRV.CorrType_ContractAccount" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="CorrTypeSet" Role="FromRole_CorrType_ContractAccount"/>
+                    <End EntitySet="ContractAccountSet" Role="ToRole_CorrType_ContractAccount"/>
+                </AssociationSet>
+                <AssociationSet Name="CorrType_ContractSet" Association="ZBI_PW_LETTER_TOOL_SRV.CorrType_Contract" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="CorrTypeSet" Role="FromRole_CorrType_Contract"/>
+                    <End EntitySet="ContractSet" Role="ToRole_CorrType_Contract"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <atom:link rel="self" href="http://sapsdvapp.aws.londonhydro.cloud:8000/sap/opu/odata/sap/ZBI_PW_LETTER_TOOL_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="http://sapsdvapp.aws.londonhydro.cloud:8000/sap/opu/odata/sap/ZBI_PW_LETTER_TOOL_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
