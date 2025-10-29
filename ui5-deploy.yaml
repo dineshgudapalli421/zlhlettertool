@@ -17,9 +17,9 @@ builder:
           url: http://sapsdvapp.aws.londonhydro.cloud:8000
           client: '200'
         app:
-          name: ZLH_BI_LETTOOL
-          description: Letter tool Application
+          name: ZLH_BI_LET_TOOL
+          description: Letter Tool
           package: ZFIORI
-          transport: SDVK908813
+          transport: SDVK913124
         exclude:
           - /test/
