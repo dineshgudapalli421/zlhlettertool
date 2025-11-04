@@ -302,13 +302,16 @@ sap.ui.define([
             this.oDialog.close();
         },
         onSubmitLetTool: function () {
+            debugger;
             var corrTypeInput = l.getView().byId("idCorrType");
             var corrType = corrTypeInput.getValue();
             var contractInput = l.getView().byId("idConAcc");
             var letterToolModel = l.getView().getModel("LetterTool");
             var contractsMultiInput = l.getView().byId("IdContractsMultInput");
             var selectedContracts = contractsMultiInput.getSelectedKeys();
-            var contractAcc = contractInput.getValue();
+            // var contractAcc = contractInput.getValue();
+            var contractAccTokens = contractInput.getTokens();
+
             var contractList = [];
             var portionList = [];
             var deviceList = [];
@@ -324,8 +327,12 @@ sap.ui.define([
                 corrTypeInput.setValueStateText("Please Enter the Value");
                 return;
             }
-            var contract = { ContractAcc: contractAcc };
-            contractList.push(contract);
+            for (let i = 0; i < contractAccTokens.length; i++) {
+                var contractAcc = contractAccTokens[i].getKey();
+                var contract = { ContractAcc: contractAcc };
+                contractList.push(contract);
+            }
+
             var portionInput = l.getView().byId("idPortio");
             var portionTokens = portionInput.getTokens();
             for (let i = 0; i < portionTokens.length; i++) {
