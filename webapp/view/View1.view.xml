@@ -12,19 +12,19 @@
         busy="{LetterTool>/bIsBusy}"
         busyIndicatorDelay="1"
     >
-        <!-- <headerContent>
-            <Button
+        <headerContent>
+            <!-- <Button
                 text="{i18n>CorrTypelegBtn}"
                 type="Transparent"
                 press="onPressCoreTypeLegacy"
-            />
+            /> -->
             <Button
                 icon="sap-icon://sap-box"
                 text="{i18n>zlhDisCorType}"
                 type="Transparent"
                 press="onPressCoreTypeDis"
             />
-        </headerContent> -->
+        </headerContent>
         <content>
             <f:SimpleForm
                 id="idIntRecAccDetSF"
@@ -93,9 +93,9 @@
                         valueHelpRequest="onValueHelpContAcc"
                     /> -->
                     <Label
-                        text="{i18n>zlhcontaccNumb}"
-                        required="{= %{LetterTool>/aContracts}.length >0}"
-                    />
+                        text="{i18n>zlhcontaccNumb}"/>
+                        <!-- required="{= %{LetterTool>/aContracts}.length >0}"
+                    /> -->
 
                     <MultiComboBox
                         id="IdContractsMultInput"

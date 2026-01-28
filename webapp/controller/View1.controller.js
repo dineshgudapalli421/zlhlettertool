@@ -121,38 +121,65 @@ sap.ui.define([
             l._fnOnSearchAccount();
         },
         _fnOnSearchAccount: function () {
-            var model = l.getOwnerComponent().getModel("IntRecSer");
+            debugger;
+            var model = l.getOwnerComponent().getModel();
+            //var model = l.getOwnerComponent().getModel("IntRecSer");
             var letterToolModel = l.getView().getModel("LetterTool");
             var firstName = letterToolModel.getProperty("/oContractAccVHObj/sFirstName");
             var lastName = letterToolModel.getProperty("/oContractAccVHObj/sLastName");
             var contractAccount = letterToolModel.getProperty("/oContractAccVHObj/sContractAccount");
             var accountId = letterToolModel.getProperty("/oContractAccVHObj/sAcountId");
             letterToolModel.setProperty("/bIsConTractAccountBusy", true);
-            model.read("/GetAccounts", {
-                urlParameters: {
-                    City: "''",
-                    Street: "''",
-                    HouseNo: "''",
-                    Email: "''",
-                    Phone: "''",
-                    PostalCode: "''",
-                    Region: "''",
-                    Country: "''",
+            // model.read("/GetAccounts", {
+            //     urlParameters: {
+            //         City: "''",
+            //         Street: "''",
+            //         HouseNo: "''",
+            //         Email: "''",
+            //         Phone: "''",
+            //         PostalCode: "''",
+            //         Region: "''",
+            //         Country: "''",
+            //         AccountID: "'" + accountId + "'",
+            //         ContractAccountID: "'" + contractAccount + "'",
+            //         LastName: "'" + lastName + "'",
+            //         UserName: "''",
+            //         FirstName: "'" + firstName + "'",
+            //         Contact: "''",
+            //         $expand: "ContractAccounts",
+            //         $select: "ContractAccounts/ContractAccountID"
+            //     },
+            //************ Changed By Dinesh as on 16-01-2026 ********* */
+             model.read("/GetAccountDetails", {
+                urlParameters: {   
+                    ContractAccountID: "'" + contractAccount + "'",                 
                     AccountID: "'" + accountId + "'",
-                    ContractAccountID: "'" + contractAccount + "'",
-                    LastName: "'" + lastName + "'",
-                    UserName: "''",
                     FirstName: "'" + firstName + "'",
-                    Contact: "''",
-                    $expand: "ContractAccounts",
-                    $select: "ContractAccounts/ContractAccountID"
+                    LastName: "'" + lastName + "'"
                 },
                 success: function (data, response) {
+                    debugger;
                     letterToolModel.setProperty("/bIsConTractAccountBusy", false);
-                    var accounts = data.results;
-                    if (accounts.length) {
-                        letterToolModel.setProperty("/valuehelpList", accounts);
+                    if (data.results.length > 0) {
+                        var accounts = data.results;
+                        if (accounts.length) {
+                            var oContracts = [];
+                            for (var i = 0; i < accounts.length; i++) {
+                                var aContracts = { "ContractAccountID": accounts[i].ContractAccountID };
+                                oContracts.push(aContracts);
+                            }
+                            // var aFilterAccounts = [];
+                            // aFilterAccounts = accounts.filter(function (oAccount) {
+                            //     // Check if any property value in the object is not empty ("" or other falsy values)
+                            //     return oAccount.ContractAccountID;
+                            // })
+                            letterToolModel.setProperty("/valuehelpList", oContracts);
+                        }
                     }
+                    else {
+                        letterToolModel.setProperty("/valuehelpList", [{ "ContractAccountID": '' }]);
+                    }
+
                 },
                 error: function (error) {
                     var errorMessage;
@@ -178,6 +205,7 @@ sap.ui.define([
             var aSelectedItems = list.getSelectedItems();
             var oMultiInput = l.byId("idConAcc");
             oMultiInput.removeAllTokens();
+            oMultiInput.setValue("");
             var objItems = [];
             for (var i = 0; i < aSelectedItems.length; i++) {
                 objItems.push(aSelectedItems[i].getProperty('title'));
@@ -195,8 +223,18 @@ sap.ui.define([
             for (const oItem of objItems) {
                 const oData = await l.getContracts(oItem);
             }
-            letterToolModel.setProperty("/aContracts", objContracts);
+            // var uniqueContracts = objContracts.filter((item, index) => {
+            //     return objContracts.indexOf(item) === index;
+            // });
+            const uniqueContracts = objContracts.filter((item, index, self) =>
+                // Keep only the first object with a specific 'id'
+                index === self.findIndex((t) => (
+                    t.ContractID === item.ContractID
+                ))
+            );
+            letterToolModel.setProperty("/aContracts", uniqueContracts);
             letterToolModel.setProperty("/oContractAccVHObj/sAcountId", "");
+            letterToolModel.setProperty("/oContractAccVHObj/sContractAccount", "");
             letterToolModel.setProperty("/valuehelpList", [{}]);
             l.onCloseContAccValuehelp();
             // var selectedContext = list.getSelectedContexts("LetterTool")[0].sPath;
@@ -207,6 +245,7 @@ sap.ui.define([
             // l.getView().byId("idConAcc").setValue(contractAccountId);
         },
         getContracts: async function (contractAccountId) {
+            debugger;
             var model = l.getOwnerComponent().getModel("IntRecSer");
             //var letterToolModel = l.getView().getModel("LetterTool");        
             return new Promise(function (resolve, reject) {
@@ -291,13 +330,32 @@ sap.ui.define([
             }
         },
         onChangeCorrType: function () {
+            debugger;
             var corrTypeInput = l.getView().byId("idCorrType");
+            var oMultiInput = l.getView().byId("IdContractsMultInput");
+            var oPortion = l.getView().byId("idPortio");
+            var oCorrespondenceType = corrTypeInput.getValue();
             corrTypeInput.setValueState("None");
             corrTypeInput.setValueStateText("");
+            l.getView().byId("idConAcc").removeAllTokens();
+            oMultiInput.removeAllSelectedItems();
+            oPortion.removeAllTokens();
+            // if (oCorrespondenceType === 'ZD06' || oCorrespondenceType === 'ZD07') {
+            //     oMultiInput.setEditable(false);
+            //     oPortion.setEditable(false);
+            // }
+            // else {
+            //     oMultiInput.setEditable(true);
+            //     oPortion.setEditable(true);
+            // }
+
         },
         onCloseContAccValuehelp: function () {
+            var list = l.getView().byId("idListvalueContAcc");
+            list.removeSelections(true);
             var letterToolModel = l.getView().getModel("LetterTool");
             letterToolModel.setProperty("/oContractAccVHObj/sAcountId", "");
+            letterToolModel.setProperty("/oContractAccVHObj/sContractAccount", "");
             letterToolModel.setProperty("/valuehelpList", [{}]);
             this.oDialog.close();
         },
@@ -309,7 +367,7 @@ sap.ui.define([
             var letterToolModel = l.getView().getModel("LetterTool");
             var contractsMultiInput = l.getView().byId("IdContractsMultInput");
             var selectedContracts = contractsMultiInput.getSelectedKeys();
-            // var contractAcc = contractInput.getValue();
+            var contractAccManual = contractInput.getValue();
             var contractAccTokens = contractInput.getTokens();
 
             var contractList = [];
@@ -317,21 +375,34 @@ sap.ui.define([
             var deviceList = [];
             var contracts = letterToolModel.getProperty("/aContracts");
             var selectedContractKeys = contractsMultiInput.getSelectedKeys();
-            if (contracts.length && !selectedContractKeys.length) {
-                contractsMultiInput.setValueState("Error");
-                contractsMultiInput.setValueStateText("Please select contracts");
-                return;
-            }
+           
+            // if (contracts.length && !selectedContractKeys.length) {
+            //     contractsMultiInput.setValueState("Error");
+            //     contractsMultiInput.setValueStateText("Please select contracts");
+            //     return;
+            // }
             if (!corrType) {
                 corrTypeInput.setValueState("Error");
                 corrTypeInput.setValueStateText("Please Enter the Value");
                 return;
             }
-            for (let i = 0; i < contractAccTokens.length; i++) {
-                var contractAcc = contractAccTokens[i].getKey();
-                var contract = { ContractAcc: contractAcc };
+            //  if (contractAccTokens.length) {
+            //     MessageBox.error("Please enter contract account")
+            //     // contractsMultiInput.setValueState(ValueState.Error);
+            //     // contractsMultiInput.setValueStateText("Please select contract accounts");
+            //     return;
+            // }
+            if (contractAccTokens.length) {
+                for (let i = 0; i < contractAccTokens.length; i++) {
+                    var contractAcc = contractAccTokens[i].getKey();
+                    var contract = { ContractAcc: contractAcc };
+                    contractList.push(contract);
+                }
+            } else if (contractAccManual.length) {
+                var contract = { ContractAcc: contractAccManual };
                 contractList.push(contract);
             }
+
 
             var portionInput = l.getView().byId("idPortio");
             var portionTokens = portionInput.getTokens();
@@ -346,7 +417,14 @@ sap.ui.define([
                 var contractNum = { ContractNum: selectedContracts[i] };
                 contractNumList.push(contractNum);
             }
-            if (contractAcc.length) {
+            // if (contractAcc.length) {
+            //     var payload = {
+            //         COTYP: corrType,
+            //         NAVCORRTYPE_CONTRACT: contractNumList,
+            //         NAVCORRTYPE_CONTRACTACCOUNT: contractList
+            //     };
+            // } 
+            if (contractAccManual.length || contractAccTokens.length) {
                 var payload = {
                     COTYP: corrType,
                     NAVCORRTYPE_CONTRACT: contractNumList,
@@ -374,10 +452,18 @@ sap.ui.define([
                         onClose: function () {
                             l._fnResetLetTool();
                             l.getView().byId("idCorrType").setValue("");
-                            for (let i = 0; i < contractAcc.length; i++) {
-                                var contractInput = l.getView().byId("idConAcc");
+                            var contractInput = l.getView().byId("idConAcc");
+                            var oMultiInput = l.getView().byId("IdContractsMultInput");
+                            contractInput.setValue("");
+
+                            if (contractAccManual.length) {
                                 contractInput.setValue("");
                             }
+                            else if (contractAccTokens.length) {
+                                contractInput.removeAllTokens();
+                                //oMultiInput.removeAllTokens();
+                            }
+
                             for (let i = 0; i < portionTokens.length; i++) {
                                 var portionInput = l.getView().byId("idPortio");
                                 portionInput.removeAllTokens();
@@ -414,37 +500,46 @@ sap.ui.define([
         },
         onPressCoreTypeDis: function () {
             var navigationService = sap.ushell.Container.getService("Navigation");
-            var target = { target: { semanticObject: "CACorrespondence", action: "display" } };
+            // var target = { target: { semanticObject: "CACorrespondence", action: "display" } };
+            var target = { target: { semanticObject: "ZLH_SEMOBJ_ADPDC", action: "manage" } };
             navigationService.navigate(target, l.getOwnerComponent());
         },
-        onSubContAcc: function (e) {
+        onSubContAcc: async function (e) {
+            debugger;
+            objContracts = [];
+            var letterToolModel = l.getView().getModel("LetterTool");
             l.getView().getModel("LetterTool").setProperty("/bIsBusy", true);
             var contractInput = l.getView().byId("idConAcc");
             var contractValue = contractInput.getValue();
             var model = l.getOwnerComponent().getModel();
-            model.read("/ContractAccountSet('" + contractValue + "')", {
-                success: function (data, response) {
-                    if (data.ContractAcc) {
-                        contractInput.setValue(data.ContractAcc);
-                        l.getContracts(data.ContractAcc);
-                    }
-                    l.getView().getModel("LetterTool").setProperty("/bIsBusy", false);
-                },
-                error: function (error) {
-                    var errorMessage;
-                    l.getView().getModel("LetterTool").setProperty("/bIsBusy", false);
-                    if (error.responseText.startsWith("<")) {
-                        var parser = new DOMParser();
-                        var xmlDoc = parser.parseFromString(error.responseText, "text/xml");
-                        errorMessage = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
-                    } else {
-                        var errorData = error.responseText;
-                        var errorJson = JSON.parse(errorData);
-                        errorMessage = errorJson.error.message.value;
-                    }
-                    MessageBox.error(errorMessage);
-                }
-            });
+            const oData = await l.getContracts(contractValue);
+            letterToolModel.setProperty("/aContracts", objContracts);
+            l.getView().getModel("LetterTool").setProperty("/bIsBusy", false);
+            // model.read("/ContractAccountSet('" + contractValue + "')", {
+            //     success: function (data, response) {
+            //         if (data.ContractAcc) {
+            //             debugger;
+            //             contractInput.setValue(data.ContractAcc);
+            //             const oData = l.getContracts(data.ContractAcc);                        
+            //         }
+            //         l.getView().getModel("LetterTool").setProperty("/bIsBusy", false);
+            //     },
+            //     error: function (error) {
+            //         var errorMessage;
+            //         l.getView().getModel("LetterTool").setProperty("/bIsBusy", false);
+            //         if (error.responseText.startsWith("<")) {
+            //             var parser = new DOMParser();
+            //             var xmlDoc = parser.parseFromString(error.responseText, "text/xml");
+            //             errorMessage = xmlDoc.getElementsByTagName("message")[0].childNodes[0].nodeValue;
+            //         } else {
+            //             var errorData = error.responseText;
+            //             var errorJson = JSON.parse(errorData);
+            //             errorMessage = errorJson.error.message.value;
+            //         }
+            //         MessageBox.error(errorMessage);
+            //     }
+            // });
+
         },
         onSubDevSet: function () {
             var deviceInput = l.getView().byId("idDev");

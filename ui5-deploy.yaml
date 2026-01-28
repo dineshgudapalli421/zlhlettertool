@@ -20,6 +20,6 @@ builder:
           name: ZLH_BI_LET_TOOL
           description: Letter Tool
           package: ZFIORI
-          transport: SDVK913124
+          transport: SDVK914484
         exclude:
           - /test/
