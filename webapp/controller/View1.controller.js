@@ -9,10 +9,12 @@ sap.ui.define([
     "sap/ushell/Container"
 ], function (Controller, JSONModel, MessageBox, Filter, FilterOperator, MessageToast, ValueState, Container) {
     "use strict";
-    var l, i, objContracts;
+    var l, i, objContracts, UIComponent, oCorrespTypeModel, oMainModel;
     return Controller.extend("com.sap.lh.bi.zlhlettertool.controller.View1", {
         onInit: function () {
             l = this;
+            UIComponent = l.getOwnerComponent();
+            oMainModel = l.getOwnerComponent().getModel();
             var model = new JSONModel({
                 bIsConTractAccountBusy: false,
                 bIsBusy: false,
@@ -34,6 +36,29 @@ sap.ui.define([
                 aSelSubTo: []
             });
             l.getView().setModel(model, "LetterTool");
+            l._fngetCorrespondenceModel();
+        },
+        _fngetCorrespondenceModel: function () {
+            oMainModel.read("/CorrTypeSet", {
+                success: function (response) {
+                    if (response.results.length > 0) {
+                        let track = {}
+                        let results = response.results.reduce((op, inp) => {
+                            if (!track[inp.COTYP]) {
+                                op.push(inp)
+                                track[inp.COTYP] = inp
+                            }
+                            return op
+                        }, [])
+
+                        oCorrespTypeModel = new sap.ui.model.json.JSONModel();
+                        oCorrespTypeModel.setData([results], "CorrespondType");
+                    }
+                },
+                error: (oError) => {
+                    console.error("Error:", oError);
+                }
+            });
         },
         onValueHelpDevice: function (e) {
             var model = l.getOwnerComponent().getModel();
@@ -150,9 +175,9 @@ sap.ui.define([
             //         $select: "ContractAccounts/ContractAccountID"
             //     },
             //************ Changed By Dinesh as on 16-01-2026 ********* */
-             model.read("/GetAccountDetails", {
-                urlParameters: {   
-                    ContractAccountID: "'" + contractAccount + "'",                 
+            model.read("/GetAccountDetails", {
+                urlParameters: {
+                    ContractAccountID: "'" + contractAccount + "'",
                     AccountID: "'" + accountId + "'",
                     FirstName: "'" + firstName + "'",
                     LastName: "'" + lastName + "'"
@@ -340,6 +365,20 @@ sap.ui.define([
             l.getView().byId("idConAcc").removeAllTokens();
             oMultiInput.removeAllSelectedItems();
             oPortion.removeAllTokens();
+            if (oCorrespondenceType !== '') {
+                if (oCorrespTypeModel.getData("CorrespondType")[0].length > 0) {
+                    var aItems = oCorrespTypeModel.getData("CorrespondType")[0];
+                    if (aItems && Array.isArray(aItems)) {
+                        var aMatches = aItems.filter(function (oItem) {
+                            return oItem.COTYP === oCorrespondenceType;
+                        });
+                        if (aMatches.length === 0) {
+                            corrTypeInput.setValue('');
+                            MessageBox.error("Correspondence Type : " + oCorrespondenceType + " is not valid.");
+                        }
+                    }
+                }
+            }
             // if (oCorrespondenceType === 'ZD06' || oCorrespondenceType === 'ZD07') {
             //     oMultiInput.setEditable(false);
             //     oPortion.setEditable(false);
@@ -375,7 +414,7 @@ sap.ui.define([
             var deviceList = [];
             var contracts = letterToolModel.getProperty("/aContracts");
             var selectedContractKeys = contractsMultiInput.getSelectedKeys();
-           
+
             // if (contracts.length && !selectedContractKeys.length) {
             //     contractsMultiInput.setValueState("Error");
             //     contractsMultiInput.setValueStateText("Please select contracts");
